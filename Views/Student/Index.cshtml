@@ -1,0 +1,54 @@
+﻿
+    @model List<SchoolManagementSystem.Models.Student>
+    <h2> لیست دانش آموزان</h2>
+ <table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>ردیف</th>
+            <th>نام</th>
+            <th>نام خانوادگی</th>
+            <th>کد ملی</th>
+            <th>پایه</th>
+            <th>نام پدر</th>
+            <th>تاریخ تولد</th>
+            <th>تلفن</th>
+            <th>وضغیت</th>
+            <th>جنسیت</th>
+            <th>تاریخ ثبت نام</th>
+        </tr>
+    </thead>
+
+    <tbody>
+            @{
+                int row = 1;
+            }
+
+
+
+
+            @foreach (var student in Model)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@student.NationalCode</td>
+                    <td>@student.FatherName</td>
+                    <td>@student.PhoneNumber</td>
+                    <td>@student.BirthDate</td>
+                    <td>@student.RegisterDate</td>
+                    <td>@student.Grade</td>
+                     <td>@student.Gender</td>
+                
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm">ویرایش</a>
+                        <a href="#" class="btn btn-danger btn-sm">حذف</a>
+                    </td>
+                </tr>
+
+                row++;
+            }
+
+        </tbody>
+    </table>
+     
