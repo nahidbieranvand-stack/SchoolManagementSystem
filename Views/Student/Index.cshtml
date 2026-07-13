@@ -1,7 +1,31 @@
-﻿
+﻿@{
+    ViewData["Title"] = "لیست دانش‌آموزان";
+}
     @model List<SchoolManagementSystem.Models.Student>
-    <h2> لیست دانش آموزان</h2>
- <table class="table table-bordered table-striped table-hover">
+
+<div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+   <a class=" btn btn-success" asp-controller="Student"
+      asp-action="Creat">
+            <i class="bi bi-plus-circle"></i> افزودن دانش آموز
+        </a>
+
+    <form asp-action="Index" method="get">
+            <div class="input-group ">
+                <input type="text" name="search" class="form-control" placeholder="نام،نام خانوادگی،کد ملی" />
+            
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i>
+                    جستجو
+                </button>
+               
+</div></form></div>
+<div class=" row mt-3"></div>@* برای ایجاد فاصله بین دکهم و جدول*@
+    <div class="card shadow" >
+     <div class="card-header bg-primary text-white">
+        <h4> لیست دانش آموزان</h4>
+        </div>
+        <div class="card-body ">
+            <table class="table  table-striped table-hover  table-bordered align-middle">
     <thead>
         <tr>
             <th>ردیف</th>
@@ -17,7 +41,9 @@
             <th>تاریخ ثبت نام</th>
             <th>پایه </th>
             <th>جنسیت </th>
+                    <th>عملیات</th>
         </tr>
+
     </thead>
 
     <tbody>
@@ -37,26 +63,45 @@
                     <td>@student.NationalCode</td>
                     <td>@student.FatherName</td>
                     <td>@student.PhoneNumber</td>
-                    <td>@student.BirthDate</td>
-                    <td>@student.IsActive </td>
-                    <td>@student.RegisterDate</td>
+                    <td>@student.BirthDate.ToString()</td>
+                   <td>
+                            @if (student.IsActive)
+                            {
+                                <span class="badge bg-success">فعال</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">غیرفعال</span>
+                            }
+                   </td>
+                    <td>@student.RegisterDate.ToString()</td>
                     <td>@student.Grade</td>
                      <td>@student.Gender</td>
-                     
-                    <td>
+                     <td>
+                        
                     <a asp-action="Edit"
                        asp-route-id="@student.Id"
-                       class="btn btn-warning">
+                       class="btn btn-outline-warning btn-sm me-1">
+                                <i class="bi bi-pencil-square"></i>
                         ویرایش
+
                     </a>
-                       
-                        <a href="#" class="btn btn-danger btn-sm">حذف</a>
+
+                    <a asp-action="Delet"
+                       asp-route-id="@student.Id"
+                               class="btn btn-outline-danger btn-sm ">
+                                <i class="bi bi-trash"></i>
+                        حذف
+                    </a>
                     </td>
                 </tr>
-
+                    
                 row++;
             }
 
         </tbody>
     </table>
+        </div>
+    </div>
+
      
