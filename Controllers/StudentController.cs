@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
@@ -17,21 +18,43 @@ namespace SchoolManagementSystem.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(string ?search)
+        public IActionResult Index(string ? search,string? sortOrder)
         {
             // return Content("Student Controller Works");
-           var students = _context.Students.ToList();
+            // var students = _context.Students.ToList();
+            var students = _context.Students.AsQueryable ();
             if (!string.IsNullOrWhiteSpace(search))
             {
                 //اینجا با نامو نام خانوادگی وکد ملی سرچ میکنیم
                 students = students.Where(s =>
                 s.FirstName.Contains(search) ||
                 s.LastName.Contains(search) ||
-                s.NationalCode.Contains(search)).ToList();
-           
+           //  s.NationalCode.Contains(sear ch)).ToList();این برای زمانی بود که فقط خواستیم جستجو کنیم
+           s.NationalCode.Contains(search));
 
-        }
-            return View(students);
+            }
+            switch (sortOrder)
+            {
+                case "name":
+                    students = students.OrderBy(s => s.FirstName);
+                    break;
+
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.FirstName);
+                    break;
+
+                case "grade":
+                    students = students.OrderBy(s => s.Grade);
+                    break;
+
+                default:
+                    students = students.OrderBy(s => s.Id);
+                    break;
+            }
+            //برای اینکه این حات برای مرتب سازی ها ایجاد کنیم که اگر نزولی بود بشود صعودی و برعمسنام ▼
+            ViewBag.NameSortParm =
+     sortOrder == "name" ? "name_desc" : "name";
+            return View(students.ToList());
         }
         [HttpGet]
         public IActionResult creat()

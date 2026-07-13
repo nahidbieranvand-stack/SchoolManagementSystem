@@ -29,7 +29,22 @@
     <thead>
         <tr>
             <th>ردیف</th>
-            <th>نام</th>
+                    <th>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewBag.NameSortParm"
+                           class="text-decoration-none text-dark">
+                            نام
+                            @*<i class="bi bi-sort-alpha-down"></i>*@
+                            @if (ViewBag.NameSortParm == "name")
+                            {
+                                <span>▲</span>
+                            }
+                            else if (ViewBag.NameSortParm == "name_desc")
+                            {
+                                <span>▼</span>
+                            }
+                        </a>
+                    </th>
             <th>نام خانوادگی</th>
             <th>کد ملی</th>
             
