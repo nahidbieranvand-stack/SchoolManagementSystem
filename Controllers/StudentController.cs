@@ -18,11 +18,15 @@ namespace SchoolManagementSystem.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(string ? search,string? sortOrder)
+        public IActionResult Index(string ? search,string? sortOrder,int page=1)
         {
             // return Content("Student Controller Works");
             // var students = _context.Students.ToList();
             var students = _context.Students.AsQueryable ();
+            int pagesize = 10;//این تعدادانش آموزادرهر صفحه نمایش میدهد
+            
+            int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
+           
             if (!string.IsNullOrWhiteSpace(search))
             {
                 //اینجا با نامو نام خانوادگی وکد ملی سرچ میکنیم
@@ -53,8 +57,28 @@ namespace SchoolManagementSystem.Controllers
             }
             //برای اینکه این حات برای مرتب سازی ها ایجاد کنیم که اگر نزولی بود بشود صعودی و برعمسنام ▼
             ViewBag.NameSortParm =
-     sortOrder == "name" ? "name_desc" : "name";
-            return View(students.ToList());
+            sortOrder == "name" ? "name_desc" : "name";
+            
+            int totalStudents = students.Count();
+            int totalPages = (int)Math.Ceiling((double)totalStudents / pagesize);
+            ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pagesize;
+            var pagestudents = students
+                .Skip(skip)
+                .Take(pagesize)
+                .ToList();
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+            // return View(students.ToList());
+            return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
         }
         [HttpGet]
         public IActionResult creat()
