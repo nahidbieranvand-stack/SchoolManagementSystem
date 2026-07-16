@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
+using SchoolManagementSystem.ViewModels;
 
 
 namespace SchoolManagementSystem.Controllers
@@ -15,6 +17,8 @@ namespace SchoolManagementSystem.Controllers
         {
             _context = context;
         }
+       
+
 
 
         [HttpGet]
@@ -24,9 +28,9 @@ namespace SchoolManagementSystem.Controllers
             // var students = _context.Students.ToList();
             var students = _context.Students.AsQueryable ();
             int pagesize = 10;//این تعدادانش آموزادرهر صفحه نمایش میدهد
-            
-            int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
+
            
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 //اینجا با نامو نام خانوادگی وکد ملی سرچ میکنیم
@@ -56,14 +60,15 @@ namespace SchoolManagementSystem.Controllers
                     break;
             }
             //برای اینکه این حات برای مرتب سازی ها ایجاد کنیم که اگر نزولی بود بشود صعودی و برعمسنام ▼
-            ViewBag.NameSortParm =
-            sortOrder == "name" ? "name_desc" : "name";
+            
             
             int totalStudents = students.Count();
             int totalPages = (int)Math.Ceiling((double)totalStudents / pagesize);
-            ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pagesize;
+          //  ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
+          //  ViewBag.CurrentPage = page;
+          //ViewBag.PageSize = pagesize;
+          //  ViewBag.TotalStudents= totalStudents;
+            int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
             var pagestudents = students
                 .Skip(skip)
                 .Take(pagesize)
@@ -77,8 +82,21 @@ namespace SchoolManagementSystem.Controllers
             {
                 page = totalPages;
             }
+
             // return View(students.ToList());
-            return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
+            //  return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
+            var viewModel = new StudentListViewModel
+            {
+                Students = pagestudents,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pagesize,
+                TotalStudents = totalStudents,
+                Search = search,
+                SortOrder = sortOrder,
+                NameSortParm = sortOrder == "name" ? "name_desc" : "name"
+            };
+            return View(viewModel);
         }
         [HttpGet]
         public IActionResult creat()
