@@ -1,0 +1,13 @@
+﻿using SchoolManagementSystem.Models;
+namespace SchoolManagementSystem.Repositories.Interfaces
+{
+    public interface  IStudentRepository
+    {
+       IQueryable <Student> GetAll();
+        void Add(Student student);
+        void Update(Student student);
+        void Delete(Student student);
+        bool NationalCodeExists(string nationalCode);
+        Student? GetById(int id);
+    }
+}

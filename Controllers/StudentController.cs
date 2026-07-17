@@ -6,18 +6,26 @@ using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
 using SchoolManagementSystem.ViewModels;
 
-
+using SchoolManagementSystem.Repositories.Interfaces;
 namespace SchoolManagementSystem.Controllers
 {
 
     public class StudentController : Controller
     {
         private readonly SchoolDbContext _context;
-        public StudentController(SchoolDbContext context)
+        private readonly IStudentRepository _studentRepository;
+
+        /* public StudentController(SchoolDbContext context)حالا که ریپ.زیتوری ساختین اینو نمیخواییم
+         {
+             _context = context;
+         }*/
+        //این خطوط پایین ریپ.زیتوری ن
+        public StudentController( SchoolDbContext context,
+      IStudentRepository studentRepository)
         {
-            _context = context;
+           // _context = context;
+            _studentRepository = studentRepository;
         }
-       
 
 
 
@@ -26,7 +34,9 @@ namespace SchoolManagementSystem.Controllers
         {
             // return Content("Student Controller Works");
             // var students = _context.Students.ToList();
-            var students = _context.Students.AsQueryable ();
+          //  var students = _context.Students.AsQueryable ();
+          //چون داریم از ریپوزیتوری استفاده میکنیم خط بالا حذف و پایینی اضافه 
+            var students = _studentRepository.GetAll();
             int pagesize = 10;//این تعدادانش آموزادرهر صفحه نمایش میدهد
 
            
@@ -99,26 +109,26 @@ namespace SchoolManagementSystem.Controllers
             return View(viewModel);
         }
         [HttpGet]
-        public IActionResult creat()
+        public IActionResult create()
         {
             return View();
 
         }
-        private bool NationalCodeExists(string nationalCode)
+     /*   private bool NationalCodeExists(string nationalCode) رفت داخل ریپوزیتوری
         {
             return _context.Students
                            .Any(s => s.NationalCode == nationalCode);
-        }
+        }*/
 
         [HttpPost]
-        public IActionResult Creat(Student student)
+        public IActionResult Create(Student student)
         {
             //Console.WriteLine(student.FirstName);برای اینکه ببینم مقدار میگیرند یانه بریک پوینت نیذارین و اجره
             // Console.WriteLine(student.LastName);
             if (!ModelState.IsValid)
                 return View(student);
-
-            if (NationalCodeExists(student.NationalCode))
+           // if (NationalCodeExists(student.NationalCode))بخاطر ریپوزیتوری جابجا با خط پایین
+                if (_studentRepository. NationalCodeExists(student.NationalCode))
             {
                 ModelState.AddModelError("NationalCode",
                     "این کد ملی قبلاً ثبت شده است.");
@@ -127,16 +137,20 @@ namespace SchoolManagementSystem.Controllers
             }
             student.RegisterDate = DateTime.Now;
             student.IsActive = true;
-            _context.Students.Add(student);
+            _studentRepository.Add(student);
+           // _context.Students.Add(student);
             //student.RegisterDate = DateTime.Now;
-            _context.SaveChanges();
+           // _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var student = _context.Students.Find(id);
+
+
+            //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
+             var student = _studentRepository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -151,15 +165,18 @@ namespace SchoolManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
                 return View(student);
-            _context.Students.Update(student);
-            _context.SaveChanges();
+            //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
+           //  _context.SaveChanges();
+           _studentRepository.Update(student);
+           
+
 
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult Delet(int id)
-        {
-            var student = _context.Students.Find(id);
+        public IActionResult Delete (int id)
+        {  //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
+            var student = _studentRepository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -167,18 +184,20 @@ namespace SchoolManagementSystem.Controllers
             return View(student);
         }
         //چون تابع دیلیت فقط ای دی را برای حفظ میگیرد پس برا یاینکه خطا ندهد این خظ را اضاففه میکینم و به اینصورت مینویسیم 
-      //  [ActionName("Delet")]
-      //  public IActionResult DeletcoDeleteConfirmed(int id)
+      //  [ActionName("Delete")]
+      //  public IActionResult Deletepost(int id)
         [HttpPost]
-        [ActionName("Delet")]
-        public IActionResult DeletcoDeleteConfirmed(int id)
+        [ActionName("Delete")]
+        public IActionResult Deletepost(int id)
         {
-            var student = _context.Students.Find(id);
+            //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
+            var student = _studentRepository.GetById(id);
             if (student == null)
             
                 return NotFound();
-            _context.Students.Remove(student);
-            _context.SaveChanges();
+            //  _context.Students.Remove(student);
+            //_context.SaveChanges();
+            _studentRepository.Delete(student);
             return RedirectToAction(nameof(Index));
 
            
