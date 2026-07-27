@@ -1,12 +1,12 @@
 ﻿using SchoolManagementSystem.Models;
 
-namespace SchoolManagementSystem.ViewModels
+namespace SchoolManagementSystem.ViewModels.Students
 {
     public class StudentListViewModel
     {
         // لیست دانش آموزان
         public List<Student> Students { get; set; } = new();
-
+        public int? SelectedId { get; set; }
         // صفحه بندی
         public int CurrentPage { get; set; }
 
@@ -23,6 +23,6 @@ namespace SchoolManagementSystem.ViewModels
         public string? SortOrder { get; set; }
 
         public string? NameSortParm { get; set; }
-       
+
     }
 }

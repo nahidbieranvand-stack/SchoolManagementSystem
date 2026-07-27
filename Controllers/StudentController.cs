@@ -5,41 +5,80 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
 using SchoolManagementSystem.ViewModels;
+using SchoolManagementSystem.ViewModels.Students;
 
 using SchoolManagementSystem.Repositories.Interfaces;
+using SchoolManagementSystem.Services.Interfaces;
+
+using SchoolManagementSystem.Repositories.Implementation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace SchoolManagementSystem.Controllers
 {
 
     public class StudentController : Controller
     {
         private readonly SchoolDbContext _context;
-        private readonly IStudentRepository _studentRepository;
+        // private readonly IStudentRepository _studentRepository;این جای خودش به سرویس داد
+        private readonly IStudentService _studentService;
+        private void FillDropDowns(EditStudentViewModel model)
+        {
+            model.GenderList = new List<SelectListItem>
+    {
+        new SelectListItem
+        {
+            Text = "مرد",
+            Value = ((int)Gender.Male).ToString()
+        },
+        new SelectListItem
+        {
+            Text = "زن",
+            Value = ((int)Gender.Female).ToString()
+        }
+    };
 
+            model.GradeList = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "اول ابتدایی", Value = "1" },
+        new SelectListItem { Text = "دوم ابتدایی", Value = "2" },
+        new SelectListItem { Text = "سوم ابتدایی", Value = "3" },
+        new SelectListItem { Text = "چهارم ابتدایی", Value = "4" },
+        new SelectListItem { Text = "پنجم ابتدایی", Value = "5" },
+        new SelectListItem { Text = "ششم ابتدایی", Value = "6" }
+    };
+        }
         /* public StudentController(SchoolDbContext context)حالا که ریپ.زیتوری ساختین اینو نمیخواییم
          {
              _context = context;
          }*/
         //این خطوط پایین ریپ.زیتوری ن
-        public StudentController( SchoolDbContext context,
-      IStudentRepository studentRepository)
+        /*  public StudentController( SchoolDbContext context,
+        IStudentRepository studentRepository)
+          {
+             // _context = context;
+              _studentRepository = studentRepository;
+          }*/
+
+        public StudentController(SchoolDbContext context,IStudentService studentService)
         {
-           // _context = context;
-            _studentRepository = studentRepository;
+            // _context = context;
+            _studentService = studentService;
         }
 
 
-
         [HttpGet]
-        public IActionResult Index(string ? search,string? sortOrder,int page=1)
+        public IActionResult Index(int? selectedId,string ? search,string? sortOrder,int page=1)
         {
             // return Content("Student Controller Works");
             // var students = _context.Students.ToList();
           //  var students = _context.Students.AsQueryable ();
           //چون داریم از ریپوزیتوری استفاده میکنیم خط بالا حذف و پایینی اضافه 
-            var students = _studentRepository.GetAll();
+
+            var students = _studentService.GetAll();
             int pagesize = 10;//این تعدادانش آموزادرهر صفحه نمایش میدهد
 
-           
+            
+
+            
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -96,7 +135,9 @@ namespace SchoolManagementSystem.Controllers
             // return View(students.ToList());
             //  return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
             var viewModel = new StudentListViewModel
+           
             {
+                SelectedId = selectedId,
                 Students = pagestudents,
                 CurrentPage = page,
                 TotalPages = totalPages,
@@ -106,13 +147,40 @@ namespace SchoolManagementSystem.Controllers
                 SortOrder = sortOrder,
                 NameSortParm = sortOrder == "name" ? "name_desc" : "name"
             };
+            
             return View(viewModel);
+
         }
         [HttpGet]
         public IActionResult create()
         {
-            return View();
+            // return View(new CreateStudentViewModel());چون آمدیم از حالت دراپ دون برای جنسیت استفاده کنیم این را دیگه نمینویسم بجاش خطوط زی را داریم
+            var model = new CreateStudentViewModel();
 
+            model.GenderList = new List<SelectListItem>
+{
+    new SelectListItem
+    {
+        Text="مرد",
+        Value=((int)Gender.Male).ToString()
+    },
+
+    new SelectListItem
+    {
+        Text="زن",
+        Value=((int)Gender.Female).ToString()
+    }
+};
+            model.GradeList = new List<SelectListItem>
+{
+    new SelectListItem { Text="اول ابتدایی", Value="1" },
+    new SelectListItem { Text="دوم ابتدایی", Value="2" },
+    new SelectListItem { Text="سوم ابتدایی", Value="3" },
+    new SelectListItem { Text="چهارم ابتدایی", Value="4" },
+    new SelectListItem { Text="پنجم ابتدایی", Value="5" },
+    new SelectListItem { Text="ششم ابتدایی", Value="6" }
+};
+            return View(model);
         }
      /*   private bool NationalCodeExists(string nationalCode) رفت داخل ریپوزیتوری
         {
@@ -120,29 +188,51 @@ namespace SchoolManagementSystem.Controllers
                            .Any(s => s.NationalCode == nationalCode);
         }*/
 
+
         [HttpPost]
-        public IActionResult Create(Student student)
+        public IActionResult Create(CreateStudentViewModel model)
+
         {
+            
             //Console.WriteLine(student.FirstName);برای اینکه ببینم مقدار میگیرند یانه بریک پوینت نیذارین و اجره
             // Console.WriteLine(student.LastName);
             if (!ModelState.IsValid)
-                return View(student);
-           // if (NationalCodeExists(student.NationalCode))بخاطر ریپوزیتوری جابجا با خط پایین
-                if (_studentRepository. NationalCodeExists(student.NationalCode))
+                return View(model);
+            var student = new Student
             {
-                ModelState.AddModelError("NationalCode",
-                    "این کد ملی قبلاً ثبت شده است.");
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                NationalCode = model.NationalCode,
+                BirthDate = model.BirthDate,
+                FatherName = model.FatherName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                Grade = model.Grade
+            };
+            var result =_studentService.Add(student);
+            if (!result.Success)
+            {
+               ModelState.AddModelError("NationalCode", result.Message);
+                 return View(model);}
+                // if (NationalCodeExists(student.NationalCode))بخاطر ریپوزیتوری جابجا با خط پایین
+                /*    if (_studentService. NationalCodeExists(student.NationalCode))بخاطر سرویس تغییر میکنند
+                {
+                    ModelState.AddModelError("NationalCode",
+                        "این کد ملی قبلاً ثبت شده است.");
 
-                return View(student);
-            }
-            student.RegisterDate = DateTime.Now;
-            student.IsActive = true;
-            _studentRepository.Add(student);
-           // _context.Students.Add(student);
+                    return View(student);
+                }*/
+                // student.RegisterDate = DateTime.Now; این دوتا رفتن داخل سرویس نباید مداخل کنترلر باشن
+                //student.IsActive = true;
+                _studentService.Add(student);
+            // _context.Students.Add(student);
             //student.RegisterDate = DateTime.Now;
-           // _context.SaveChanges();
-
+            // _context.SaveChanges();
+            //برای نمایش پیام موفقیت آمیز بودن ثبت دانش آموز
+            TempData["SuccessMessage"] = result.Message;
             return RedirectToAction(nameof(Index));
+            
+
         }
         [HttpGet]
         public IActionResult Edit(int id)
@@ -150,33 +240,65 @@ namespace SchoolManagementSystem.Controllers
 
 
             //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
-             var student = _studentRepository.GetById(id);
+             var student = _studentService.GetById(id);
             if (student == null)
             {
                 return NotFound();
             }
-            return View(student);
+            var model = new EditStudentViewModel
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                NationalCode = student.NationalCode,
+                BirthDate = student.BirthDate,
+                FatherName = student.FatherName,
+                PhoneNumber = student.PhoneNumber,
+                Gender = student.Gender,
+                Grade = student.Grade
+            };
 
-
+            FillDropDowns(model);
+            return View(model);
         }
+        // return View(student);بخاطر ویو مدلاین حذف میشه
+
+
+
         [HttpPost]
-        
-        public IActionResult Edit(Student student)
+
+        public IActionResult Edit(EditStudentViewModel model)
         {
             if (!ModelState.IsValid)
-                return View(student);
+            {
+                FillDropDowns(model);
+                    return View(model);
+            }
+               
+            var student = new Student
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                NationalCode = model.NationalCode,
+                BirthDate = model.BirthDate,
+                FatherName = model.FatherName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                Grade = model.Grade
+            };
             //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
-           //  _context.SaveChanges();
-           _studentRepository.Update(student);
-           
+            //  _context.SaveChanges();
+            _studentService.Update(student);
 
+            TempData["SuccessMessage"] = "اطلاعات دانش‌آموز با موفقیت ویرایش شد.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { selectedId = student.Id });
         }
         [HttpGet]
         public IActionResult Delete (int id)
         {  //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
-            var student = _studentRepository.GetById(id);
+            var student = _studentService.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -191,13 +313,13 @@ namespace SchoolManagementSystem.Controllers
         public IActionResult Deletepost(int id)
         {
             //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
-            var student = _studentRepository.GetById(id);
+            var student = _studentService.GetById(id);
             if (student == null)
             
                 return NotFound();
             //  _context.Students.Remove(student);
             //_context.SaveChanges();
-            _studentRepository.Delete(student);
+            _studentService.Delete(student);
             return RedirectToAction(nameof(Index));
 
            

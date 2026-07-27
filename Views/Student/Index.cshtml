@@ -1,12 +1,18 @@
 ﻿@using SchoolManagementSystem.Helpers
 @*model List<SchoolManagementSystem.Models.Student>@**@
- @model SchoolManagementSystem.ViewModels.StudentListViewModel
+ @model  SchoolManagementSystem.ViewModels.Students.StudentListViewModel
 @{
     ViewData["Title"] = "لیست دانش‌آموزان";
 }  
-    
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
-    
+
 <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
    <a class=" btn btn-success" asp-controller="Student"
       asp-action="Create">
@@ -53,7 +59,7 @@
         <div class="card-body ">
             <table class="table  table-striped table-hover  table-bordered align-middle">
     <thead>
-        <tr>
+                <tr>
             <th>ردیف</th>
                     <th>
                         <a asp-action="Index"
@@ -101,7 +107,7 @@
 
             @foreach (var student in Model.Students)
             {
-                <tr>
+                    <tr class="@(student.Id == Model.SelectedId ? "table-warning" : "")">
                     <td>@row</td>
                     <td>@student.FirstName</td>
                     <td>@student.LastName</td>
@@ -236,12 +242,25 @@
                     </li>
 
                 </ul>
+
             </nav>
+
         }
 
-         
+        <script>
+            window.onload = function () {
+                var row = document.getElementById("student-@Model.SelectedId");
+                if (row) {
+                    row.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
+            }
+        </script>
 
-            
+
     </div>
 
      </div>
+     

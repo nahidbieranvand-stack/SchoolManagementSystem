@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Repositories.Interfaces;
 using SchoolManagementSystem.Repositories.Implementation;
+using SchoolManagementSystem.Services.Interfaces;
+using SchoolManagementSystem.Services.Implementations;
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 // Add services to the container.
@@ -12,6 +15,7 @@ builder.Services.AddDbContext<SchoolDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 var app = builder.Build();
 

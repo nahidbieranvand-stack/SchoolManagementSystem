@@ -5,27 +5,27 @@
     ViewData["Title"] = "ایجاد دانش‌آموز";
 }
 @{
-    @model SchoolManagementSystem.Models.Student
+    @model SchoolManagementSystem.ViewModels.Students.CreateStudentViewModel
     <div class=" row mt-2"></div>
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
             <div class="card shadow"> 
             <div class="card-header bg-primary text-white"> <h4> افزودن دانش آموز</h4></div>
      <div class="card-body">
-            
-        <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <form asp-action="Create" method="post">
            
                 <div class="row">
                 <div class="col-md-6 ">
                 <label asp-for="FirstName" class="form-label"></label>
-                <input asp-for="FirstName" class="form-control" />
+                <input asp-for="FirstName" class="form-control"  placeholder="نام"/>
                 <span asp-validation-for="FirstName" class="text-danger"></span></div>
 
 
 
                  <div class="col-md-6 ">
                 <label asp-for="LastName" class="form-label"></label>
-                <input asp-for="LastName" class="form-control" />
+                <input asp-for="LastName" class="form-control" placeholder="نام خانوادگی" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
                 </div></div>
            
@@ -33,7 +33,9 @@
                 <div class="row">
                 <div class="col-md-6">
                 <label asp-for="NationalCode" class="form-label"></label>
-                <input asp-for="NationalCode" class="form-control" />
+                <input asp-for="NationalCode" class="form-control" placeholder="کدملی 10 رقمی "
+                                       maxlength="10" minlwnght="10" pattern="[0-9]{10}"
+                                       inputmode="numeric" />
                 <span asp-validation-for="NationalCode" class="text-danger"></span>
             </div>
                 <div class="col-md-6">
@@ -56,11 +58,24 @@
                  <div class="row">
                 <div class="col-md-6">
                 <label asp-for="Gender" class="form-label"></label>
-                <input asp-for="Gender" class="form-control" />
+                                <select asp-for="Gender"
+                                        asp-items="Model.GenderList"
+                                        class="form-select">
+                                    <option value="">انتخاب کنید...</option>
+                                </select>
             </div>
                 <div class="col-md-6">
                 <label asp-for="Grade" class="form-label"></label>
-                <input asp-for="Grade" class="form-control" />
+                                <label asp-for="Grade" class="form-label"></label>
+
+                                <select asp-for="Grade"
+                                        asp-items="Model.GradeList"
+                                        class="form-select">
+                                    <option value="">انتخاب پایه...</option>
+                                </select>
+
+                                <span asp-validation-for="Grade"
+                                      class="text-danger"></span>
                     
             </div>
 
