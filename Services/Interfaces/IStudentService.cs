@@ -15,7 +15,7 @@ namespace SchoolManagementSystem.Services.Interfaces
 
         void Update(Student student);
 
-        void Delete(Student student);
+        void Delete(int id);
 
         bool NationalCodeExists(string nationalCode);
         

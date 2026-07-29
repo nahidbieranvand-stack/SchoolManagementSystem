@@ -51,9 +51,9 @@ namespace SchoolManagementSystem.Services.Implementations
             _studentRepository.Update(student);
         }
 
-        public void Delete(Student student)
+        public void Delete(int id)
         {
-            _studentRepository.Delete(student);
+            _studentRepository.Delete(id);
         }
 
         public bool NationalCodeExists(string nationalCode)

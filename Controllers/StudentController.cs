@@ -109,20 +109,33 @@ namespace SchoolManagementSystem.Controllers
                     break;
             }
             //برای اینکه این حات برای مرتب سازی ها ایجاد کنیم که اگر نزولی بود بشود صعودی و برعمسنام ▼
-            
-            
-            int totalStudents = students.Count();
+            var studentList = students.ToList();
+
+           
+
+                int totalStudents = studentList.Count();
             int totalPages = (int)Math.Ceiling((double)totalStudents / pagesize);
-          //  ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
-          //  ViewBag.CurrentPage = page;
-          //ViewBag.PageSize = pagesize;
-          //  ViewBag.TotalStudents= totalStudents;
-            int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
-            var pagestudents = students
-                .Skip(skip)
-                .Take(pagesize)
-                .ToList();
-            if (page < 1)
+            //  ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
+            //  ViewBag.CurrentPage = page;
+            //ViewBag.PageSize = pagesize;
+            //  ViewBag.TotalStudents= totalStudents;
+            if (totalPages == 0)
+            {
+                totalPages = 1;
+            }
+            if (selectedId.HasValue)
+            {
+                var index = studentList
+     .ToList()
+     .Select((s, i) => new { s.Id, Index = i })
+     .FirstOrDefault(x => x.Id == selectedId.Value);
+
+                if (index != null)
+                {
+                    page = (index.Index / pagesize) + 1;
+                }
+
+                if (page < 1)
             {
                 page = 1;
             }
@@ -131,6 +144,29 @@ namespace SchoolManagementSystem.Controllers
             {
                 page = totalPages;
             }
+            
+            }
+            int skip = (page - 1) * pagesize;
+
+            var pagestudents = studentList
+                .Skip(skip)
+                .Take(pagesize)
+                .ToList();
+            
+            /*   int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
+               var pagestudents = students
+                   .Skip(skip)
+                   .Take(pagesize)
+                   .ToList();
+               if (page < 1)
+               {
+                   page = 1;
+               }
+
+               if (page > totalPages)
+               {
+                   page = totalPages;
+               }*/
 
             // return View(students.ToList());
             //  return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
@@ -147,6 +183,7 @@ namespace SchoolManagementSystem.Controllers
                 SortOrder = sortOrder,
                 NameSortParm = sortOrder == "name" ? "name_desc" : "name"
             };
+
             
             return View(viewModel);
 
@@ -235,7 +272,7 @@ namespace SchoolManagementSystem.Controllers
 
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int id,int page)
         {
 
 
@@ -257,7 +294,7 @@ namespace SchoolManagementSystem.Controllers
                 Gender = student.Gender,
                 Grade = student.Grade
             };
-
+            ViewBag.ReturnPage = page;
             FillDropDowns(model);
             return View(model);
         }
@@ -267,33 +304,34 @@ namespace SchoolManagementSystem.Controllers
 
         [HttpPost]
 
-        public IActionResult Edit(EditStudentViewModel model)
+        public IActionResult Edit(EditStudentViewModel model,int page)
         {
             if (!ModelState.IsValid)
             {
                 FillDropDowns(model);
                     return View(model);
             }
-               
-            var student = new Student
+            var student = _studentService.GetById(model.Id);
+            if (student == null)
             {
-                Id = model.Id,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                NationalCode = model.NationalCode,
-                BirthDate = model.BirthDate,
-                FatherName = model.FatherName,
-                PhoneNumber = model.PhoneNumber,
-                Gender = model.Gender,
-                Grade = model.Grade
-            };
+                return NotFound();
+            }
+            student.Id= model.Id;
+            student.FirstName = model.FirstName;
+            student.LastName = model.LastName;
+            student.NationalCode = model.NationalCode;
+            student.BirthDate = model.BirthDate;
+            student.FatherName = model.FatherName;
+            student.PhoneNumber = model.PhoneNumber;
+            student.Gender = model.Gender;
+            student.Grade = model.Grade;
             //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
             //  _context.SaveChanges();
             _studentService.Update(student);
 
             TempData["SuccessMessage"] = "اطلاعات دانش‌آموز با موفقیت ویرایش شد.";
 
-            return RedirectToAction(nameof(Index), new { selectedId = student.Id });
+            return RedirectToAction(nameof(Index), new { selectedId = student.Id, page = page });
         }
         [HttpGet]
         public IActionResult Delete (int id)
@@ -303,23 +341,38 @@ namespace SchoolManagementSystem.Controllers
             {
                 return NotFound();
             }
-            return View(student);
+            var model = new DeleteStudentViewModel
+            {
+              
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                NationalCode = student.NationalCode,
+                BirthDate = student.BirthDate,
+                FatherName = student.FatherName,
+                PhoneNumber = student.PhoneNumber,
+                Gender = student.Gender,
+                Grade = student.Grade
+            };
+
+            return View(model);
         }
         //چون تابع دیلیت فقط ای دی را برای حفظ میگیرد پس برا یاینکه خطا ندهد این خظ را اضاففه میکینم و به اینصورت مینویسیم 
       //  [ActionName("Delete")]
       //  public IActionResult Deletepost(int id)
         [HttpPost]
         [ActionName("Delete")]
-        public IActionResult Deletepost(int id)
+        public IActionResult Deletepost(DeleteStudentViewModel model)
         {
             //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
-            var student = _studentService.GetById(id);
-            if (student == null)
+          //  var student = _studentService.GetById(model.Id);
             
-                return NotFound();
+          //  if (student == null)
+            
+             //   return NotFound();
             //  _context.Students.Remove(student);
             //_context.SaveChanges();
-            _studentService.Delete(student);
+            _studentService.Delete(model.Id);
+            TempData["SuccessMessage"] = "دانش‌آموز با موفقیت حذف شد.";
             return RedirectToAction(nameof(Index));
 
            

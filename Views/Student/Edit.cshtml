@@ -11,8 +11,10 @@
     <form asp-action="Edit"  method="post">
         <div class="row">
             <div class="col-md-6">
+                <input type="hidden" name="page" value="@ViewBag.ReturnPage" />
             <label asp-for="FirstName" class="form-label"></label>
             <input asp-for="FirstName" class="form-control" />
+
             <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
 
@@ -71,7 +73,14 @@
         <button class="btn btn-primary" type="submit" >
           تغییرات ذخیره شود
         </button>
+        <a asp-action="Index"
+           class="btn btn-secondary">
 
+            <i class="bi bi-arrow-right"></i>
+
+            انصراف
+
+        </a>
     </form>
     
     }

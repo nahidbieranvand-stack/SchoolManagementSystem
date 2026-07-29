@@ -3,15 +3,14 @@
 }@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-    @model SchoolManagementSystem.Models.Student
-    <h2 color="red"> آیا از حذف دانش آموز مطمعن هستید؟؟؟</h2>
-   <form asp-action="Delete"  method="post">
-        
+
+   @*@model SchoolManagementSystem.Models.Student    
+    <form asp-action="Delete"  method="post">
+
 
         <button class="btn btn-danger" type="submit" >
             <i class="bi bi-trash"></i>
-            
+
             حذف
         </button>
 
@@ -20,6 +19,109 @@
             انصراف
         </a>
         </form>
- 
+         <h2 color="red"> آیا از حذف دانش آموز مطمعن هستید؟؟؟</h2>
+
+   *@
+    @model SchoolManagementSystem.ViewModels.Students.DeleteStudentViewModel
+  
+   <div class="card shadow mt-4">
+
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">
+            <i class="bi bi-trash3-fill"></i>
+            تایید حذف دانش‌آموز
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            آیا از حذف این دانش‌آموز مطمئن هستید؟
+
+            <br />
+
+            <small>
+
+                این عملیات در نسخه فعلی باعث حذف اطلاعات می‌شود.
+
+            </small>
+
+        </div>
+    <form asp-action="Delete" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="hidden" name="page" value="@ViewBag.ReturnPage" />
+                    <input asp-for="Id" type="hidden" />
+                <div class="mb-3">
+                        <label class="fw-bold">نام</label>
+                        <p class=" form-control-plaintext">@Model.FirstName</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                    <label class="fw-bold"> نام خانوادگی</label>
+                <p class="form-control-plaintext">@Model.LastName</p>
+                
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                    <label class="fw-bold"> کد ملی</label>
+                  <p class="form-control-plaintext">@Model.NationalCode</p>
+            </div>
+            <div class="col-md-6">
+                <label  class="fw-bold"> تاریخ تولد</label>
+                <p class="form-control-plaintext">@Model.BirthDate</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label  class="fw-bold"> نام پدر</label>
+                <p class="form-control-plaintext">@Model.FatherName</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold"> شماره تلفن</label>
+                <p class="form-control-plaintext">@Model.PhoneNumber</p>
+            </div>
+        </div>
+        <div class="row">
+           
+            <div class="col-md-6">
+                <label  class="fw-bold">جنسیت</label>
+                    <p class="form-control-plaintext">@(Model.Gender == Gender.Male ? "مرد" : "زن")</p>
+            </div>
+        
+            <div class="col-md-6">
+                <label  class="fw-bold"> پایه</label>
+                <p class="form-control-plaintext">@Model.Grade</p>
+            </div>
+        </div>
+
+            <div class="text-end mt-4">
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-trash"></i>
+
+                    حذف دانش‌آموز
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    انصراف
+
+                </a>
+
+            </div>
+
+    </form>
     
-    }
+    </div></div>

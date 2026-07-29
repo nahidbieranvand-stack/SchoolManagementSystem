@@ -14,7 +14,8 @@ namespace SchoolManagementSystem.Repositories.Implementation
 
         public IQueryable<Student> GetAll()
         {
-            return _context.Students.AsQueryable();
+            //return _context.Students.AsQueryable();بخاطر  سافت دیلیت بصورت زیر تغییر میدیم 
+            return _context.Students.Where(x =>x.IsActive);
         }
         public void Add(Student student)
         {
@@ -26,10 +27,15 @@ namespace SchoolManagementSystem.Repositories.Implementation
             _context.Students.Update(student);
             _context.SaveChanges();
         }
-        public void Delete(Student student)
+        public void Delete(int id)
         {
-            _context.Students.Remove(student);
-            _context.SaveChanges();
+            var student = _context.Students.Find(id);
+            if (student != null)
+            {
+                //  _context.Students.Remove(student);دیگخ rwmoveنداریمبخاطر انی کار را کردیم یعنی نمیخوایم واقعا خذف شود فقط این فرد غیرفعال بشود
+                student.IsActive = false;
+                _context.SaveChanges();
+            }
         }
         public Student? GetById(int id)
         {
