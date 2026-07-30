@@ -12,6 +12,7 @@ using SchoolManagementSystem.Services.Interfaces;
 
 using SchoolManagementSystem.Repositories.Implementation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SchoolManagementSystem.Services.Implementations;
 namespace SchoolManagementSystem.Controllers
 {
 
@@ -356,6 +357,7 @@ namespace SchoolManagementSystem.Controllers
 
             return View(model);
         }
+
         //چون تابع دیلیت فقط ای دی را برای حفظ میگیرد پس برا یاینکه خطا ندهد این خظ را اضاففه میکینم و به اینصورت مینویسیم 
       //  [ActionName("Delete")]
       //  public IActionResult Deletepost(int id)
@@ -379,11 +381,61 @@ namespace SchoolManagementSystem.Controllers
         }
 
 
+        public IActionResult InactiveStudents()
+        {
+            var students = _studentService.GetInactiveStudents();
 
+            var viewModel = new StudentListViewModel
+            {
+                Students = students.ToList()
+            };
+
+            return View(viewModel);
+        }
+        [HttpGet]
+        public IActionResult Restore(int id)
+            {
+                var student = _studentService.GetById(id);
+
+                if (student == null)
+                {
+                    return NotFound();
+                }
+
+                var model = new DeleteStudentViewModel
+                {
+                    Id = student.Id,
+                    FirstName = student.FirstName,
+                    LastName = student.LastName,
+                    NationalCode = student.NationalCode,
+                    BirthDate = student.BirthDate,
+                    FatherName = student.FatherName,
+                    PhoneNumber = student.PhoneNumber,
+                    Gender = student.Gender,
+                    Grade = student.Grade
+                };
+
+               
+
+                return View(model);
+            }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restore(DeleteStudentViewModel model)
+        {
+           
+           
+
+            _studentService.Restore(model.Id);
+
+            TempData["SuccessMessage"] = "دانش‌آموز با موفقیت بازیابی شد.";
+
+            return RedirectToAction(nameof(InactiveStudents));
+        }
 
     }
 
-
+   
 
 
 }

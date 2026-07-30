@@ -46,5 +46,21 @@ namespace SchoolManagementSystem.Repositories.Implementation
             return _context.Students
                            .Any(s => s.NationalCode == nationalCode);
         }
+        public void Restore(int id)
+        {
+            var student = _context.Students.Find(id);
+
+            if (student != null)
+            {
+                student.IsActive = true;
+
+                _context.SaveChanges();
+            }
+        }
+        public IQueryable<Student> GetInactiveStudents()
+        {
+            return _context.Students
+                           .Where(student => !student.IsActive);
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace SchoolManagementSystem.Repositories.Interfaces
         void Delete(int id);
         bool NationalCodeExists(string nationalCode);
         Student? GetById(int id);
+        void Restore(int id);
+        IQueryable<Student> GetInactiveStudents();
     }
 }

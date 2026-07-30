@@ -1,0 +1,58 @@
+﻿@model SchoolManagementSystem.ViewModels.Students.StudentListViewModel
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        @TempData["SuccessMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+
+    </div>
+}
+
+<h2>دانش‌آموزان غیرفعال</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>نام</th>
+            <th>نام خانوادگی</th>
+            <th>نام پدر</th>
+            <th>کد ملی</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var student in Model.Students)
+        {
+            <tr>
+
+                <td>@student.FirstName</td>
+
+                <td>@student.LastName</td>
+                <td>@student.FatherName</td>
+
+                <td>@student.NationalCode</td>
+                <td>
+                    <a asp-action="Restore"
+                       asp-route-id="@student.Id"
+                       class="btn btn-success btn-sm">
+
+                        <i class="bi bi-arrow-counterclockwise"></i>
+
+                        بازیابی
+
+                    </a>
+                </td>
+            </tr>
+            
+        }
+
+    </tbody>
+
+</table>

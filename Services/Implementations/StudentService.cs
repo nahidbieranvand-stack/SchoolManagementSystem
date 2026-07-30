@@ -60,6 +60,14 @@ namespace SchoolManagementSystem.Services.Implementations
         {
             return _studentRepository.NationalCodeExists(nationalCode);
         }
+        public void Restore(int id)
+        {
+            _studentRepository.Restore(id);
+        }
+        public IQueryable<Student> GetInactiveStudents()
+        {
+            return _studentRepository.GetInactiveStudents();
+        }
 
     }
 }

@@ -18,6 +18,8 @@ namespace SchoolManagementSystem.Services.Interfaces
         void Delete(int id);
 
         bool NationalCodeExists(string nationalCode);
-        
+        void Restore(int id);
+        IQueryable<Student> GetInactiveStudents();
+
     }
 }
