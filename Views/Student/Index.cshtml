@@ -103,6 +103,7 @@
             <th>تاریخ ثبت نام</th>
             <th>پایه </th>
             <th>جنسیت </th>
+                 <th>عکس</th>
                     <th>عملیات</th>
         </tr>
 
@@ -140,6 +141,25 @@
                     <td>@student.RegisterDate.ToString()</td>
                     <td>@student.Grade</td>
                      <td>@student.Gender</td>
+                        <td>
+                       
+                                @if (!string.IsNullOrEmpty(student.ImagePath))
+                                {
+                                <img src="@student.ImagePath"
+                                     alt="تصویر دانش‌آموز"
+                                     width="80"
+                                     height="80"
+                                     class="rounded"
+                                     style="object-fit:cover;" />
+                                }
+                                else
+                                {
+                                <img src="/images/default-student.png"
+                                     width="60"
+                                     height="60"
+                                     class="rounded" />
+                                }
+                        </td>
                      <td>
                         
                     <a asp-action="Edit"

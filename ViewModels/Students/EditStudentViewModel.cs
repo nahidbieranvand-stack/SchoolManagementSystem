@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagementSystem.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace SchoolManagementSystem.ViewModels.Students
 {
@@ -41,6 +42,10 @@ namespace SchoolManagementSystem.ViewModels.Students
             get; set;
         }
         public List<SelectListItem> GradeList { get; set; } = new();
+        public IFormFile? ImageFile { get; set; }
+        public string? ImagePath { get; set; }
+
+       
     }
 
 }

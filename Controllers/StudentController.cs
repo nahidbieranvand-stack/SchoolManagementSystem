@@ -197,7 +197,7 @@ namespace SchoolManagementSystem.Controllers
 
             model.GenderList = new List<SelectListItem>
 {
-    new SelectListItem
+      new SelectListItem
     {
         Text="مرد",
         Value=((int)Gender.Male).ToString()
@@ -236,6 +236,14 @@ namespace SchoolManagementSystem.Controllers
             // Console.WriteLine(student.LastName);
             if (!ModelState.IsValid)
                 return View(model);
+            if (model.ImageFile != null)
+            {
+                TempData["SuccessMessage"] = model.ImageFile.FileName;
+            }
+            else
+            {
+                TempData["SuccessMessage"] = model.ImageFile.FileName;
+            }
             var student = new Student
             {
                 FirstName = model.FirstName,
@@ -247,7 +255,7 @@ namespace SchoolManagementSystem.Controllers
                 Gender = model.Gender,
                 Grade = model.Grade
             };
-            var result =_studentService.Add(student);
+            var result =_studentService.Add(student, model.ImageFile);
             if (!result.Success)
             {
                ModelState.AddModelError("NationalCode", result.Message);
@@ -262,7 +270,7 @@ namespace SchoolManagementSystem.Controllers
                 }*/
                 // student.RegisterDate = DateTime.Now; این دوتا رفتن داخل سرویس نباید مداخل کنترلر باشن
                 //student.IsActive = true;
-                _studentService.Add(student);
+               // _studentService.Add(student);
             // _context.Students.Add(student);
             //student.RegisterDate = DateTime.Now;
             // _context.SaveChanges();
@@ -293,7 +301,8 @@ namespace SchoolManagementSystem.Controllers
                 FatherName = student.FatherName,
                 PhoneNumber = student.PhoneNumber,
                 Gender = student.Gender,
-                Grade = student.Grade
+                Grade = student.Grade,
+                ImagePath = student.ImagePath
             };
             ViewBag.ReturnPage = page;
             FillDropDowns(model);
@@ -328,7 +337,7 @@ namespace SchoolManagementSystem.Controllers
             student.Grade = model.Grade;
             //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
             //  _context.SaveChanges();
-            _studentService.Update(student);
+            _studentService.Update(student, model.ImageFile);
 
             TempData["SuccessMessage"] = "اطلاعات دانش‌آموز با موفقیت ویرایش شد.";
 
@@ -353,6 +362,8 @@ namespace SchoolManagementSystem.Controllers
                 PhoneNumber = student.PhoneNumber,
                 Gender = student.Gender,
                 Grade = student.Grade
+
+                
             };
 
             return View(model);

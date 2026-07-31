@@ -48,5 +48,6 @@ namespace SchoolManagementSystem.Models
         [Display(Name = "جنسیت")]
         [Required(ErrorMessage = "جنسیت الزامی است.")]
         public Gender Gender { set; get; }
+        public string? ImagePath { get; set; }
     }
 }

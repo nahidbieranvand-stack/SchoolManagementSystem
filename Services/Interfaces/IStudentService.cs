@@ -11,9 +11,9 @@ namespace SchoolManagementSystem.Services.Interfaces
         Student? GetById(int id);
 
         //   void Add(Student student);با ایجاد سرویس این خط از بین میرود
-      ServiceResult  Add(Student student);
+      ServiceResult  Add(Student student, IFormFile? imageFil);
 
-        void Update(Student student);
+        void Update(Student student, IFormFile? imageFile);
 
         void Delete(int id);
 

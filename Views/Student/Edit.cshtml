@@ -8,7 +8,8 @@
     @model SchoolManagementSystem.ViewModels.Students.EditStudentViewModel
     <h2> ویرایش دانش آموز</h2>
     
-    <form asp-action="Edit"  method="post">
+    <form asp-action="Edit"  method="post"
+          enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <input type="hidden" name="page" value="@ViewBag.ReturnPage" />
@@ -48,10 +49,7 @@
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div></div>
                 <div class="row">
-                    <div class="col-md-6">
-           
-        </div>
-
+                         
                 <div class="col-md-6">
             <label asp-for="Gender" class="form-label"></label>
                 <select asp-for="Gender"
@@ -59,8 +57,8 @@
                         class="form-select">
                     <option value="">انتخاب کنید...</option>
                 </select>
-        </div></div>
-        <div class="row">
+      
+       </div>
                 <div class="col-md-6">
             <label asp-for="Grade" class="form-label"></label>
                 <select asp-for="Grade"
@@ -68,8 +66,33 @@
                         class="form-select">
                     <option value="">انتخاب پایه...</option>
                 </select>
-        </div></div>
+        </div></div>  
 
+       <div class="row">
+                <div class="col-md-6">
+            <label asp-for="ImagePath" class="form-label"> دانش آموز عکس</label>
+               
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath"
+                         alt="تصویر دانش‌آموز"
+                         width="60"
+                         height="60"
+                         class="rounded"
+                         style="object-fit:cover;" />
+                }</div>
+            <div class="col-md-6">
+                
+            <label asp-for="ImageFile" class="form-label mt-3">
+                انتخاب عکس جدید
+            </label>
+
+            <input asp-for="ImageFile"
+                   type="file"
+                   class="form-control" />
+        </div></div>
+        <div class="row">
+            <div class="col-md-6"><td></td></div></div>
         <button class="btn btn-primary" type="submit" >
           تغییرات ذخیره شود
         </button>
