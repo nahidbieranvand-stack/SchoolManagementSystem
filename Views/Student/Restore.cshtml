@@ -33,51 +33,130 @@
                     <input type="hidden" name="page" value="@ViewBag.ReturnPage" />
                     <input asp-for="Id" type="hidden" />
 
-                    <div class="mb-3">
-                        <label class="fw-bold">نام</label>
-                        <p class=" form-control-plaintext">@Model.FirstName</p>
+                    <div class="row">
+
+
+                        <!-- اطلاعات -->
+                        <div class="col-md-8">
+
+                            <div class="card border-0 shadow-sm">
+
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-person-vcard"></i>
+                                        اطلاعات دانش‌آموز
+                                    </h5>
+                                </div>
+
+                                <div class="card-body">
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-person"></i>
+                                            نام
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.FirstName
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-people"></i>
+                                            نام خانوادگی
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.LastName
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-credit-card"></i>
+                                            کد ملی
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.NationalCode.ToPersianNumber()
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-calendar-date"></i>
+                                            تاریخ تولد
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.BirthDate.ToShortDateString()
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-person-heart"></i>
+                                            نام پدر
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.FatherName
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-telephone"></i>
+                                            شماره تلفن
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.PhoneNumber.ToPersianNumber()
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-gender-ambiguous"></i>
+                                            جنسیت
+                                        </div>
+                                        <div class="col-8">
+                                            @(Model.Gender == Gender.Male ? "مرد" : "زن")
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4 fw-bold">
+                                            <i class="bi bi-mortarboard"></i>
+                                            پایه
+                                        </div>
+                                        <div class="col-8">
+                                            @Model.Grade
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- عکس -->
+                        <div class="col-md-4 text-center mb-3">
+
+                            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                            {
+                                <img src="@Model.ImagePath"
+                                     class="img-thumbnail shadow"
+                                     style="width:220px;height:260px;object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/students/default.png"
+                                     class="img-thumbnail shadow"
+                                     style="width:220px;height:260px;object-fit:cover;" />
+                            }
+
+                        </div>
+
+
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <label class="fw-bold"> نام خانوادگی</label>
-                    <p class="form-control-plaintext">@Model.LastName</p>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="fw-bold"> کد ملی</label>
-                    <p class="form-control-plaintext">@Model.NationalCode</p>
-                </div>
-                <div class="col-md-6">
-                    <label class="fw-bold"> تاریخ تولد</label>
-                    <p class="form-control-plaintext">@Model.BirthDate</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="fw-bold"> نام پدر</label>
-                    <p class="form-control-plaintext">@Model.FatherName</p>
-                </div>
-                <div class="col-md-6">
-                    <label class="fw-bold"> شماره تلفن</label>
-                    <p class="form-control-plaintext">@Model.PhoneNumber</p>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-md-6">
-                    <label class="fw-bold">جنسیت</label>
-                    <p class="form-control-plaintext">@(Model.Gender == Gender.Male ? "مرد" : "زن")</p>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="fw-bold"> پایه</label>
-                    <p class="form-control-plaintext">@Model.Grade</p>
-                </div>
-            </div>
+                    <hr />
 
             <div class="text-end mt-4">
 

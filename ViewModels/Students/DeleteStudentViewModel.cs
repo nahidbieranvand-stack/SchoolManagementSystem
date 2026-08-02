@@ -38,6 +38,7 @@ namespace SchoolManagementSystem.ViewModels.Students
             get; set;
         }
         public List<SelectListItem> GradeList { get; set; } = new();
+        public string? ImagePath { get; set; }
     }
 }
 

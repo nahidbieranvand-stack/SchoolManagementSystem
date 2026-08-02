@@ -16,6 +16,7 @@ using SchoolManagementSystem.Services.Implementations;
 namespace SchoolManagementSystem.Controllers
 {
 
+
     public class StudentController : Controller
     {
         private readonly SchoolDbContext _context;
@@ -59,7 +60,7 @@ namespace SchoolManagementSystem.Controllers
               _studentRepository = studentRepository;
           }*/
 
-        public StudentController(SchoolDbContext context,IStudentService studentService)
+        public StudentController(SchoolDbContext context, IStudentService studentService)
         {
             // _context = context;
             _studentService = studentService;
@@ -67,19 +68,19 @@ namespace SchoolManagementSystem.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(int? selectedId,string ? search,string? sortOrder,int page=1)
+        public IActionResult Index(int? selectedId, string? search, string? sortOrder, int page = 1)
         {
             // return Content("Student Controller Works");
             // var students = _context.Students.ToList();
-          //  var students = _context.Students.AsQueryable ();
-          //چون داریم از ریپوزیتوری استفاده میکنیم خط بالا حذف و پایینی اضافه 
+            //  var students = _context.Students.AsQueryable ();
+            //چون داریم از ریپوزیتوری استفاده میکنیم خط بالا حذف و پایینی اضافه 
 
             var students = _studentService.GetAll();
             int pagesize = 10;//این تعدادانش آموزادرهر صفحه نمایش میدهد
 
-            
 
-            
+
+
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -112,9 +113,9 @@ namespace SchoolManagementSystem.Controllers
             //برای اینکه این حات برای مرتب سازی ها ایجاد کنیم که اگر نزولی بود بشود صعودی و برعمسنام ▼
             var studentList = students.ToList();
 
-           
 
-                int totalStudents = studentList.Count();
+
+            int totalStudents = studentList.Count();
             int totalPages = (int)Math.Ceiling((double)totalStudents / pagesize);
             //  ViewBag.TotalPages = totalPages;//این دو تا ی=برای ساخت دکمه های نکست و بک که مقدارشان را به ویو میفرستیم
             //  ViewBag.CurrentPage = page;
@@ -137,15 +138,15 @@ namespace SchoolManagementSystem.Controllers
                 }
 
                 if (page < 1)
-            {
-                page = 1;
-            }
+                {
+                    page = 1;
+                }
 
-            if (page > totalPages)
-            {
-                page = totalPages;
-            }
-            
+                if (page > totalPages)
+                {
+                    page = totalPages;
+                }
+
             }
             int skip = (page - 1) * pagesize;
 
@@ -153,7 +154,7 @@ namespace SchoolManagementSystem.Controllers
                 .Skip(skip)
                 .Take(pagesize)
                 .ToList();
-            
+
             /*   int skip = (page - 1) * pagesize;//تعدااد رد شدن صفحه را نشان میدهد
                var pagestudents = students
                    .Skip(skip)
@@ -172,7 +173,7 @@ namespace SchoolManagementSystem.Controllers
             // return View(students.ToList());
             //  return View(pagestudents);//حالا کهپیج استودیونت رو نوشتیم بالایی رئ غیر فعال میکنیم
             var viewModel = new StudentListViewModel
-           
+
             {
                 SelectedId = selectedId,
                 Students = pagestudents,
@@ -185,7 +186,7 @@ namespace SchoolManagementSystem.Controllers
                 NameSortParm = sortOrder == "name" ? "name_desc" : "name"
             };
 
-            
+
             return View(viewModel);
 
         }
@@ -220,18 +221,18 @@ namespace SchoolManagementSystem.Controllers
 };
             return View(model);
         }
-     /*   private bool NationalCodeExists(string nationalCode) رفت داخل ریپوزیتوری
-        {
-            return _context.Students
-                           .Any(s => s.NationalCode == nationalCode);
-        }*/
+        /*   private bool NationalCodeExists(string nationalCode) رفت داخل ریپوزیتوری
+           {
+               return _context.Students
+                              .Any(s => s.NationalCode == nationalCode);
+           }*/
 
 
         [HttpPost]
         public IActionResult Create(CreateStudentViewModel model)
 
         {
-            
+
             //Console.WriteLine(student.FirstName);برای اینکه ببینم مقدار میگیرند یانه بریک پوینت نیذارین و اجره
             // Console.WriteLine(student.LastName);
             if (!ModelState.IsValid)
@@ -255,38 +256,39 @@ namespace SchoolManagementSystem.Controllers
                 Gender = model.Gender,
                 Grade = model.Grade
             };
-            var result =_studentService.Add(student, model.ImageFile);
+            var result = _studentService.Add(student, model.ImageFile);
             if (!result.Success)
             {
-               ModelState.AddModelError("NationalCode", result.Message);
-                 return View(model);}
-                // if (NationalCodeExists(student.NationalCode))بخاطر ریپوزیتوری جابجا با خط پایین
-                /*    if (_studentService. NationalCodeExists(student.NationalCode))بخاطر سرویس تغییر میکنند
-                {
-                    ModelState.AddModelError("NationalCode",
-                        "این کد ملی قبلاً ثبت شده است.");
+                ModelState.AddModelError("NationalCode", result.Message);
+                return View(model);
+            }
+            // if (NationalCodeExists(student.NationalCode))بخاطر ریپوزیتوری جابجا با خط پایین
+            /*    if (_studentService. NationalCodeExists(student.NationalCode))بخاطر سرویس تغییر میکنند
+            {
+                ModelState.AddModelError("NationalCode",
+                    "این کد ملی قبلاً ثبت شده است.");
 
-                    return View(student);
-                }*/
-                // student.RegisterDate = DateTime.Now; این دوتا رفتن داخل سرویس نباید مداخل کنترلر باشن
-                //student.IsActive = true;
-               // _studentService.Add(student);
+                return View(student);
+            }*/
+            // student.RegisterDate = DateTime.Now; این دوتا رفتن داخل سرویس نباید مداخل کنترلر باشن
+            //student.IsActive = true;
+            // _studentService.Add(student);
             // _context.Students.Add(student);
             //student.RegisterDate = DateTime.Now;
             // _context.SaveChanges();
             //برای نمایش پیام موفقیت آمیز بودن ثبت دانش آموز
             TempData["SuccessMessage"] = result.Message;
             return RedirectToAction(nameof(Index));
-            
+
 
         }
         [HttpGet]
-        public IActionResult Edit(int id,int page)
+        public IActionResult Edit(int id, int page)
         {
 
 
             //var student = _context.Students.Find(id);بخاطر ریپوزیتوری حذف با پایینی
-             var student = _studentService.GetById(id);
+            var student = _studentService.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -314,34 +316,69 @@ namespace SchoolManagementSystem.Controllers
 
         [HttpPost]
 
-        public IActionResult Edit(EditStudentViewModel model,int page)
+        public IActionResult Edit(EditStudentViewModel model, int? page)
+                  
         {
-            if (!ModelState.IsValid)
-            {
+          
+             
+
+
+              if (!ModelState.IsValid)
+              {
+                foreach (var item in ModelState)
+                {
+                    if (item.Value.Errors.Any())
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            $"Field: {item.Key}");
+
+                        foreach (var error in item.Value.Errors)
+                        {
+                            System.Diagnostics.Debug.WriteLine(
+                                $"Error: {error.ErrorMessage}");
+                        }
+                    }
+                }
                 FillDropDowns(model);
-                    return View(model);
-            }
-            var student = _studentService.GetById(model.Id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            student.Id= model.Id;
-            student.FirstName = model.FirstName;
-            student.LastName = model.LastName;
-            student.NationalCode = model.NationalCode;
-            student.BirthDate = model.BirthDate;
-            student.FatherName = model.FatherName;
-            student.PhoneNumber = model.PhoneNumber;
-            student.Gender = model.Gender;
-            student.Grade = model.Grade;
-            //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
-            //  _context.SaveChanges();
-            _studentService.Update(student, model.ImageFile);
+                  return View(model);
+              }
 
-            TempData["SuccessMessage"] = "اطلاعات دانش‌آموز با موفقیت ویرایش شد.";
+              var student = _studentService.GetById(model.Id);
+              if (student == null)
+              {
+                  return NotFound();
+              }
 
-            return RedirectToAction(nameof(Index), new { selectedId = student.Id, page = page });
+              student.Id = model.Id;
+              student.FirstName = model.FirstName;
+              student.LastName = model.LastName;
+              student.NationalCode = model.NationalCode;
+              student.BirthDate = model.BirthDate;
+              student.FatherName = model.FatherName;
+              student.PhoneNumber = model.PhoneNumber;
+              student.Gender = model.Gender;
+              student.Grade = model.Grade;
+
+
+              //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
+              //  _context.SaveChanges();
+
+              //   _studentService.Update(student, model.ImageFile);
+              var result = _studentService.Update(student, model.ImageFile);
+
+              if (!result.Success)
+              {
+                  ModelState.AddModelError("ImageFile", result.Message);
+
+                  model.ImagePath = student.ImagePath;
+                  FillDropDowns(model);
+
+                  return View(model);
+              }
+
+              TempData["SuccessMessage"] = result.Message;
+
+              return RedirectToAction(nameof(Index), new { selectedId = student.Id, page = page ?? 1 });
         }
         [HttpGet]
         public IActionResult Delete (int id)
@@ -361,9 +398,9 @@ namespace SchoolManagementSystem.Controllers
                 FatherName = student.FatherName,
                 PhoneNumber = student.PhoneNumber,
                 Gender = student.Gender,
-                Grade = student.Grade
+                Grade = student.Grade,
+               
 
-                
             };
 
             return View(model);
@@ -423,7 +460,8 @@ namespace SchoolManagementSystem.Controllers
                     FatherName = student.FatherName,
                     PhoneNumber = student.PhoneNumber,
                     Gender = student.Gender,
-                    Grade = student.Grade
+                    Grade = student.Grade,
+                     ImagePath = student.ImagePath
                 };
 
                
@@ -434,9 +472,7 @@ namespace SchoolManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Restore(DeleteStudentViewModel model)
         {
-           
-           
-
+          
             _studentService.Restore(model.Id);
 
             TempData["SuccessMessage"] = "دانش‌آموز با موفقیت بازیابی شد.";

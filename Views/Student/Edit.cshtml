@@ -10,12 +10,16 @@
     
     <form asp-action="Edit"  method="post"
           enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ImagePath" type="hidden" />
         <div class="row">
             <div class="col-md-6">
+               
                 <input type="hidden" name="page" value="@ViewBag.ReturnPage" />
             <label asp-for="FirstName" class="form-label"></label>
             <input asp-for="FirstName" class="form-control" />
-
+                
             <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
 
@@ -90,6 +94,9 @@
             <input asp-for="ImageFile"
                    type="file"
                    class="form-control" />
+                <span asp-validation-for="ImageFile"
+                      class="text-danger">
+                </span>
         </div></div>
         <div class="row">
             <div class="col-md-6"><td></td></div></div>

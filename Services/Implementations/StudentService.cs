@@ -76,11 +76,33 @@ namespace SchoolManagementSystem.Services.Implementations
             };
         }
 
-        public void Update(Student student, IFormFile? imageFile)
+        public ServiceResult Update(Student student, IFormFile? imageFile)
         {
+            
+           var validationResult = ValidateImage(imageFile);
+           
+
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
             
             if (imageFile != null && imageFile.Length > 0)
             {
+               
+                // حذف عکس قبلی
+                if (!string.IsNullOrEmpty(student.ImagePath))
+                {
+                    var oldImagePath = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        student.ImagePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+                    if (File.Exists(oldImagePath))
+                    {
+                        File.Delete(oldImagePath);
+                    }
+                }
+
                 // تولید نام یکتای فایل
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
 
@@ -105,7 +127,13 @@ namespace SchoolManagementSystem.Services.Implementations
                 // ذخیره مسیر در دیتابیس
                 student.ImagePath = "/images/students/" + fileName;
             }
+           
             _studentRepository.Update(student);
+            return new ServiceResult
+            {
+                Success = true,
+                Message = "ویرایش با موفقیت انجام شد."
+            };
 
 
         }
@@ -126,6 +154,41 @@ namespace SchoolManagementSystem.Services.Implementations
         public IQueryable<Student> GetInactiveStudents()
         {
             return _studentRepository.GetInactiveStudents();
+        }
+        private ServiceResult? ValidateImage(IFormFile? imageFile)
+        {
+            if (imageFile == null)
+                return null;
+
+            var allowedExtensions = new[]
+            {
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    };
+
+            var extension = Path.GetExtension(imageFile.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "فرمت فایل مجاز نیست."
+                };
+            }
+
+            if (imageFile.Length > 2 * 1024 * 1024)
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "حجم فایل نباید بیشتر از ۲ مگابایت باشد."
+                };
+            }
+
+            return null;
         }
 
     }

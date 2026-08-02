@@ -13,7 +13,7 @@ namespace SchoolManagementSystem.Services.Interfaces
         //   void Add(Student student);با ایجاد سرویس این خط از بین میرود
       ServiceResult  Add(Student student, IFormFile? imageFil);
 
-        void Update(Student student, IFormFile? imageFile);
+        ServiceResult Update(Student student, IFormFile? imageFile);
 
         void Delete(int id);
 

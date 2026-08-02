@@ -8,7 +8,12 @@ using SchoolManagementSystem.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddControllersWithViews()
+    .AddMvcOptions(options =>
+    {
+        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+            _ => "مقدار ارسال شده معتبر نیست.");
+    });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
