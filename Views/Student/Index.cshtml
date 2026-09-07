@@ -127,7 +127,7 @@
                         <td>@student.NationalCode.ToPersianNumber()</td>
                     <td>@student.FatherName</td>
                     <td>@student.PhoneNumber.ToPersianNumber()</td>
-                    <td>@student.BirthDate.ToString().ToPersianNumber()</td>
+                        <td>@student.BirthDate.ToString("yyyy/MM/dd").ToPersianNumber()</td>
                    <td>
                             @if (student.IsActive)
                             {
@@ -138,8 +138,8 @@
                                 <span class="badge bg-danger">غیرفعال</span>
                             }
                    </td>
-                    <td>@student.RegisterDate.ToString()</td>
-                    <td>@student.Grade</td>
+                        <td>@student.RegisterDate.ToString("yyyy/MM/dd").ToPersianNumber()</td>
+                    <td>@student.Grade.Name</td>
                      <td>@student.Gender</td>
                         <td>
                        

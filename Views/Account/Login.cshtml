@@ -1,0 +1,210 @@
+﻿@model SchoolManagementSystem.ViewModels.LoginViewModel
+
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "ورود به سیستم";
+}
+
+<div class="login-page">
+
+    <div class="login-card">
+
+        <!-- Logo -->
+        <div class="login-brand">
+
+            <div class="brand-logo">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+
+            <h1>سامانه مدیریت مدرسه</h1>
+
+            <p>School Management System</p>
+
+        </div>
+
+
+        <!-- Title -->
+        <div class="login-title">
+
+            <h2>خوش آمدید </h2>
+
+            <p>
+                برای ورود به حساب کاربری خود اطلاعات زیر را وارد کنید.
+            </p>
+
+        </div>
+
+
+        <form asp-controller="Account"
+              asp-action="Login"
+              method="post"
+              class="login-form">
+
+            <input type="hidden"
+                   name="returnUrl"
+                   value="@ViewData["ReturnUrl"]" />
+
+
+            <!-- Validation -->
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+
+            <!-- Phone -->
+            <div class="input-group">
+
+                <label asp-for="Email">
+                    شماره تلفن / ایمیل
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-person input-icon"></i>
+
+                    <input asp-for="Email"
+                           class="login-input"
+                           placeholder="شماره تلفن یا ایمیل خود را وارد کنید"
+                           autocomplete="username" />
+
+                </div>
+
+                <span asp-validation-for="Email"
+                      class="field-error">
+                </span>
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="input-group">
+
+                <label asp-for="Password">
+                    رمز عبور
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-lock input-icon"></i>
+
+                    <input asp-for="Password"
+                           id="passwordInput"
+                           type="password"
+                           class="login-input password-input"
+                           placeholder="رمز عبور خود را وارد کنید"
+                           autocomplete="current-password" />
+
+                    <button type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="نمایش رمز عبور">
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+                <span asp-validation-for="Password"
+                      class="field-error">
+                </span>
+
+            </div>
+            <!-- capcha-->
+         
+            <div class="input-group">
+
+                <label asp-for="Captcha">
+                    کد امنیتی
+                </label>
+
+                <div class="captcha-box">
+
+                    <span class="captcha-code">
+                        @ViewData["CaptchaCode"]
+                    </span>
+
+                    <button type="button"
+                            class="captcha-refresh"
+                            onclick="refreshCaptcha()"
+                            title="تغییر کد امنیتی">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+
+                </div>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-shield-lock input-icon"></i>
+
+                    <input asp-for="Captcha"
+                           class="login-input"
+                           placeholder="کد امنیتی را وارد کنید"
+                           autocomplete="off" />
+
+                </div>
+
+                <span asp-validation-for="Captcha"
+                      class="field-error">
+                </span>
+
+            </div>
+            <!-- Remember / Forgot -->
+            <div class="login-options">
+
+                <label class="remember-option">
+
+                    <input asp-for="RememberMe" />
+
+                    <span>
+                        مرا به خاطر بسپار
+                    </span>
+
+                </label>
+
+                <a href="#"
+                   class="forgot-password">
+                    فراموشی رمز عبور؟
+                </a>
+
+            </div>
+
+
+            <!-- Login Button -->
+            <button type="submit"
+                    class="login-button">
+
+                <span>
+                    ورود به حساب
+                </span>
+
+                <i class="bi bi-arrow-left"></i>
+
+            </button>
+
+
+        </form>
+
+
+        <!-- Footer -->
+        <div class="login-footer">
+
+            <span>
+                © @DateTime.Now.Year
+                School Management System
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/login.js"
+            asp-append-version="true"></script>
+}

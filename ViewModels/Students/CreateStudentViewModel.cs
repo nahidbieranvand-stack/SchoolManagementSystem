@@ -36,7 +36,7 @@ namespace SchoolManagementSystem.ViewModels.Students
         public List<SelectListItem> GenderList { get; set; } = new();
 
         [Display(Name = "پایه تحصیلی")]
-        public int Grade
+        public int GradeId
         {
             get; set;
         }

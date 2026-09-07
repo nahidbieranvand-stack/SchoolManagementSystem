@@ -22,8 +22,17 @@ namespace SchoolManagementSystem.Controllers
         private readonly SchoolDbContext _context;
         // private readonly IStudentRepository _studentRepository;این جای خودش به سرویس داد
         private readonly IStudentService _studentService;
+        private readonly IGradeService _gradeService;
+        public StudentController(
+            IStudentService studentService,
+            IGradeService gradeService)
+        {
+            _studentService = studentService;
+            _gradeService = gradeService;                        
+        }
         private void FillDropDowns(EditStudentViewModel model)
         {
+            model.GradeList = _gradeService.GetGradeDropDown();
             model.GenderList = new List<SelectListItem>
     {
         new SelectListItem
@@ -35,18 +44,11 @@ namespace SchoolManagementSystem.Controllers
         {
             Text = "زن",
             Value = ((int)Gender.Female).ToString()
+
         }
     };
-
-            model.GradeList = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "اول ابتدایی", Value = "1" },
-        new SelectListItem { Text = "دوم ابتدایی", Value = "2" },
-        new SelectListItem { Text = "سوم ابتدایی", Value = "3" },
-        new SelectListItem { Text = "چهارم ابتدایی", Value = "4" },
-        new SelectListItem { Text = "پنجم ابتدایی", Value = "5" },
-        new SelectListItem { Text = "ششم ابتدایی", Value = "6" }
-    };
+ 
+            
         }
         /* public StudentController(SchoolDbContext context)حالا که ریپ.زیتوری ساختین اینو نمیخواییم
          {
@@ -60,11 +62,11 @@ namespace SchoolManagementSystem.Controllers
               _studentRepository = studentRepository;
           }*/
 
-        public StudentController(SchoolDbContext context, IStudentService studentService)
+    /*    public StudentController(SchoolDbContext context, IStudentService studentService)
         {
             // _context = context;
             _studentService = studentService;
-        }
+        }*/
 
 
         [HttpGet]
@@ -210,15 +212,8 @@ namespace SchoolManagementSystem.Controllers
         Value=((int)Gender.Female).ToString()
     }
 };
-            model.GradeList = new List<SelectListItem>
-{
-    new SelectListItem { Text="اول ابتدایی", Value="1" },
-    new SelectListItem { Text="دوم ابتدایی", Value="2" },
-    new SelectListItem { Text="سوم ابتدایی", Value="3" },
-    new SelectListItem { Text="چهارم ابتدایی", Value="4" },
-    new SelectListItem { Text="پنجم ابتدایی", Value="5" },
-    new SelectListItem { Text="ششم ابتدایی", Value="6" }
-};
+            model.GradeList = _gradeService.GetGradeDropDown();
+           
             return View(model);
         }
         /*   private bool NationalCodeExists(string nationalCode) رفت داخل ریپوزیتوری
@@ -254,7 +249,7 @@ namespace SchoolManagementSystem.Controllers
                 FatherName = model.FatherName,
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
-                Grade = model.Grade
+                GradeId = model.GradeId
             };
             var result = _studentService.Add(student, model.ImageFile);
             if (!result.Success)
@@ -303,7 +298,7 @@ namespace SchoolManagementSystem.Controllers
                 FatherName = student.FatherName,
                 PhoneNumber = student.PhoneNumber,
                 Gender = student.Gender,
-                Grade = student.Grade,
+                GradeId = student.GradeId,
                 ImagePath = student.ImagePath
             };
             ViewBag.ReturnPage = page;
@@ -357,7 +352,7 @@ namespace SchoolManagementSystem.Controllers
               student.FatherName = model.FatherName;
               student.PhoneNumber = model.PhoneNumber;
               student.Gender = model.Gender;
-              student.Grade = model.Grade;
+              student.GradeId = model.GradeId;
 
 
               //  _context.Students.Update(student);  //بخاطر دستورات ریپوزیتوری اینا حذف میشوند
@@ -398,8 +393,8 @@ namespace SchoolManagementSystem.Controllers
                 FatherName = student.FatherName,
                 PhoneNumber = student.PhoneNumber,
                 Gender = student.Gender,
-                Grade = student.Grade,
-               
+                GradeName = student.Grade?.Name,
+               ImagePath = student.ImagePath
 
             };
 
@@ -460,7 +455,7 @@ namespace SchoolManagementSystem.Controllers
                     FatherName = student.FatherName,
                     PhoneNumber = student.PhoneNumber,
                     Gender = student.Gender,
-                    Grade = student.Grade,
+                    GradeName = student.Grade?.Name,
                      ImagePath = student.ImagePath
                 };
 

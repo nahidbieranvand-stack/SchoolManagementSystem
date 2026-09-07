@@ -1,5 +1,6 @@
 ﻿using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Repositories.Interfaces;
 namespace SchoolManagementSystem.Repositories.Implementation
 {
@@ -15,7 +16,9 @@ namespace SchoolManagementSystem.Repositories.Implementation
         public IQueryable<Student> GetAll()
         {
             //return _context.Students.AsQueryable();بخاطر  سافت دیلیت بصورت زیر تغییر میدیم 
-            return _context.Students.Where(x =>x.IsActive);
+
+            return _context.Students.Include(x => x.Grade)
+                .Where(x =>x.IsActive);
         }
         public void Add(Student student)
         {
@@ -39,7 +42,8 @@ namespace SchoolManagementSystem.Repositories.Implementation
         }
         public Student? GetById(int id)
         {
-            return _context.Students.Find(id);
+            return _context.Students.Include(s => s.Grade)
+        .FirstOrDefault(s => s.Id == id);
         }
         public  bool NationalCodeExists(string nationalCode)
         {

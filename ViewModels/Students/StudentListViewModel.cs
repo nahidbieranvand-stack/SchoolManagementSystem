@@ -21,7 +21,7 @@ namespace SchoolManagementSystem.ViewModels.Students
 
         // مرتب سازی
         public string? SortOrder { get; set; }
-
+        public string? GradeName { get; set; }
         public string? NameSortParm { get; set; }
 
     }

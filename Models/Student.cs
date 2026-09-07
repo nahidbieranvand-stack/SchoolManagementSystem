@@ -41,9 +41,10 @@ namespace SchoolManagementSystem.Models
         [Display(Name = " فعال بودن ")]
         public bool IsActive { set; get; }
         [Display(Name = " پایه تحصیلی")]
-        [Range(1,12)]
-        public  int Grade {  set; get; }
-        
+        //  [Range(1,12)]
+        // public  int Grade {  set; get; }
+        public int GradeId { get; set; }
+         public Grade Grade { get; set; }
         public DateTime RegisterDate { get; set; }
         [Display(Name = "جنسیت")]
         [Required(ErrorMessage = "جنسیت الزامی است.")]

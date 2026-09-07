@@ -37,10 +37,11 @@ namespace SchoolManagementSystem.ViewModels.Students
         public List<SelectListItem> GenderList { get; set; } = new();
 
         [Display(Name = "پایه تحصیلی")]
-        public int Grade
+        public int GradeId
         {
             get; set;
         }
+        public string? GradeName { get; set; }
         public List<SelectListItem> GradeList { get; set; } = new();
         public IFormFile? ImageFile { get; set; }
         public string? ImagePath { get; set; }
